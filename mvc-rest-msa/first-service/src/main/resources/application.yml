@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: my-first-service
+server:
+  port: 0
+
+eureka:
+  client:
+    fetch-registry: true
+    register-with-eureka: true
+    service-url:
+      #Eureka 서버의 URL을 지정합니다. Eureka 클라이언트는 이 URL을 사용하여 Eureka 서버와 통신합니다.
+      defaultZone: http://localhost:8761/eureka
+      #eurka 화면에서 두개를 다 확인하기 위해서. FirstService를 두개 켜놓을 때 원래는 하나로만 보이는데 이렇게 하면 두개 다 보임
+  instance:
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
