@@ -4,9 +4,11 @@ import com.youyk.userservice.dto.UserDto;
 
 import com.youyk.userservice.r2dbc.entity.UserEntity;
 import com.youyk.userservice.r2dbc.repository.UserRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RequiredArgsConstructor
@@ -21,5 +23,15 @@ public class UserServiceImpl implements UserService{
                 //또 반환 타입을 Mono로 바꿔준다.
                 .flatMap(this.userRepository::save)
                 .map(UserDto::from);
+    }
+
+    @Override
+    public Flux<UserDto> getUserByAll() {
+        return userRepository.findAll().map(UserDto::from);
+    }
+
+    @Override
+    public Mono<UserDto> getUserByUserId(String userId) {
+        return userRepository.findByUserId(userId).map(UserDto::from);
     }
 }

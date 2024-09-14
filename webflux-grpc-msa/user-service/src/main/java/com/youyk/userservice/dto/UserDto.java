@@ -2,7 +2,10 @@ package com.youyk.userservice.dto;
 
 import com.youyk.userservice.r2dbc.entity.UserEntity;
 import com.youyk.userservice.vo.RequestUser;
+import com.youyk.userservice.vo.ResponseOrder;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import lombok.Builder;
 import reactor.core.publisher.Mono;
 
@@ -15,7 +18,8 @@ public record UserDto(
         String userId,
         Date createdAt,
 
-        String encryptedPwd
+        String encryptedPwd,
+        List<ResponseOrder> orders
 ) {
     public static UserDto from(final RequestUser requestUser) {
         return UserDto.builder()
@@ -23,6 +27,7 @@ public record UserDto(
                 .name(requestUser.name())
                 .pwd(requestUser.pwd())
                 .createdAt(new Date())
+                .orders(new ArrayList<>())
                 .encryptedPwd("")
                 .build();
     }
@@ -32,6 +37,7 @@ public record UserDto(
                 .email(user.getEmail())
                 .name(user.getName())
                 .userId(user.getUserId())
+                .orders(new ArrayList<>())
                 .encryptedPwd(user.getEncryptedPwd())
                 .build();
     }

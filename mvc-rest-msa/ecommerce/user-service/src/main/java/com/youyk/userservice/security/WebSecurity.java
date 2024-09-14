@@ -16,6 +16,7 @@ import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
+    private final Integer GATEWAY_PORT = 8000;
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http)
@@ -27,8 +28,14 @@ public class WebSecurity {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/users/**",
-                                "/h2-console/**"
+                                "/h2-console/**",
+                                "/health_check/**"
                         ).permitAll()
+                        //게이트웨이 포트 허용
+                        .requestMatchers(request -> {
+                            int gatewayPort = request.getRemotePort();
+                            return gatewayPort == GATEWAY_PORT;
+                        }).permitAll()
                 )
                 /**
                  * defaultsDisabled는
