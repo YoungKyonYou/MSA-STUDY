@@ -45,3 +45,7 @@ greeting:
 logging:
   level:
     sql: debug
+
+token:
+  expiration_time: 86400000
+  secret: hisIsASecretKeyForJwtTokenAndItIsLongEnoughToMeetTheRequirementOfHS512AlgorithmHS512AlgorithmHS512Algorithm

@@ -1,22 +1,30 @@
 package com.youyk.userservice.security;
 
+import com.youyk.userservice.service.UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
-import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class WebSecurity {
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserService userService;
     private final Integer GATEWAY_PORT = 8000;
+    private final String IP = "127.0.0.1";
+    private final Environment env;
 
     @Bean
     public SecurityFilterChain filterChain(final HttpSecurity http)
@@ -27,16 +35,21 @@ public class WebSecurity {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/users/**",
+                                /*"/users/**",*/
+                                "/**",
                                 "/h2-console/**",
                                 "/health_check/**"
                         ).permitAll()
                         //게이트웨이 포트 허용
                         .requestMatchers(request -> {
                             int gatewayPort = request.getRemotePort();
-                            return gatewayPort == GATEWAY_PORT;
+                            String ip = request.getRemoteAddr();
+                            return gatewayPort == GATEWAY_PORT && ip.equals(IP);
                         }).permitAll()
                 )
+                //getAuthenticationFilter() 즉 AuthenticationFilter.java는 /login 경로에서 동작하도록 설계되어 있습니다.
+                //이는 UsernamePasswordAuthenticationFilter를 상속받아 구현한 클래스이기 때문
+                .addFilter(getAuthenticationFilter())
                 /**
                  * defaultsDisabled는
                  * Spring Security는 기본적으로 여러 보안 관련 헤더(예: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection 등)를 자동으로 설정합니다.
@@ -55,4 +68,24 @@ public class WebSecurity {
         return http.build();
 
     }
+
+    private AuthenticationFilter getAuthenticationFilter() throws Exception {
+        return new AuthenticationFilter( authenticationManager(authenticationConfiguration), userService,env);
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        // AuthenticationManager를 빈으로 제공
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder);
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        return daoAuthenticationProvider;
+    }
+
+
 }

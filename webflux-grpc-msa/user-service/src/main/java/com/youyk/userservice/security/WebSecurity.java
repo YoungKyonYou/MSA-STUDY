@@ -1,21 +1,36 @@
 package com.youyk.userservice.security;
 
+import com.youyk.userservice.r2dbc.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.security.authentication.ReactiveAuthenticationManager;
+import org.springframework.security.authentication.UserDetailsRepositoryReactiveAuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity.HeaderSpec.FrameOptionsSpec;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import reactor.core.publisher.Mono;
 
 
+@RequiredArgsConstructor
 @EnableWebFluxSecurity
 @Configuration
 public class WebSecurity {
+
+    private final UserRepository userRepository;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityWebFilterChain filterChain(final ServerHttpSecurity http)
@@ -26,9 +41,7 @@ public class WebSecurity {
         http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers("/users/**",
-                                "/health_check/**").permitAll() // 허용할 URL 패턴
-                )
-
+                                "/health_check/**").permitAll().anyExchange().authenticated()) // 허용할 URL 패턴
                 /**
                  * defaultsDisabled는
                  * Spring Security는 기본적으로 여러 보안 관련 헤더(예: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection 등)를 자동으로 설정합니다.
@@ -43,8 +56,12 @@ public class WebSecurity {
                  */
                 .headers(headers -> headers// 기본 헤더 설정 비활성화
                         .frameOptions(FrameOptionsSpec::disable) // 동일 출처로 설정
-                );
+                ).addFilterAt(jwtAuthenticationFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+
         return http.build();
 
     }
+
+
+
 }
