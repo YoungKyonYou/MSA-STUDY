@@ -5,6 +5,6 @@ spring:
     config:
       server:
         git:
-          uri: file://C:\Users\USER\MSA-STUDY-CONFIG\ecommerce.yml
+          uri: file://C:\Users\USER\MSA-STUDY-CONFIG
 server:
   port: 8888

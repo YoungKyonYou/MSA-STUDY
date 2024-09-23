@@ -4,3 +4,6 @@ spring:
       uri: http://localhost:8888
       #ecommerce라는 이름은 config-server에서 설정한 ecommerce.yml 파일의 이름과 일치해야 합니다.
       name: ecommerce
+  profiles:
+    #ecommerce-dev.yml를 참고
+    active: prod
