@@ -3,6 +3,7 @@ package com.youyk.springgatewayservice.filter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import java.util.Base64;
+import java.util.Objects;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +21,7 @@ import reactor.core.publisher.Mono;
 @Component
 @Slf4j
 public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<AuthorizationHeaderFilter.Config> {
-    private Environment env;
+    private final Environment env;
 
 
 
@@ -38,7 +39,7 @@ public class AuthorizationHeaderFilter extends AbstractGatewayFilterFactory<Auth
                 return onError(exchange, "No authorization header", HttpStatus.UNAUTHORIZED);
             }
 
-            final String authorizationHeader = request.getHeaders().get(HttpHeaders.AUTHORIZATION).get(0);
+            final String authorizationHeader = Objects.requireNonNull(request.getHeaders().get(HttpHeaders.AUTHORIZATION)).get(0);
             String jwt = authorizationHeader.replace("Bearer ","");
 
             if(!isJwtValid(jwt)){

@@ -55,11 +55,19 @@ spring:
             - Path=/user-service/**
             - Method=GET
           filters:
+            #현재 StripPrefix나 RewritePath는 동일한 걸 나타냄 둘 중 하나 없어도 됨
             - StripPrefix=1
             - RemoveRequestHeader=Cookie
             - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
-
+        - id: user-service
+          uri: lb://USER-SERVICE # Eureka Server에 등록된 이름 즉 그 서비스의 spring.application.name 이다
+          predicates:
+            - Path=/user-service/actuator/**
+            - Method=GET, POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
         - id: catalog-service
           uri: lb://CATALOG-SERVICE # Eureka Server에 등록된 이름 즉 그 서비스의 spring.application.name 이다
           predicates:
@@ -73,6 +81,8 @@ spring:
             - Path=/order-service/login
           filters:
             - StripPrefix=1
+
+
       default-filters:
         - name: GlobalFilter
           args:
@@ -85,6 +95,11 @@ spring:
 server:
   port: 8000
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httpexchanges
 
 eureka:
   client:

@@ -41,7 +41,8 @@ public class WebSecurity {
         http.csrf(ServerHttpSecurity.CsrfSpec::disable)
                 .authorizeExchange(authorize -> authorize
                         .pathMatchers("/users/**",
-                                "/health_check/**").permitAll().anyExchange().authenticated()) // 허용할 URL 패턴
+                                "/health_check/**",
+                                "/actuator/**").permitAll().anyExchange().authenticated()) // 허용할 URL 패턴
                 /**
                  * defaultsDisabled는
                  * Spring Security는 기본적으로 여러 보안 관련 헤더(예: X-Content-Type-Options, X-Frame-Options, X-XSS-Protection 등)를 자동으로 설정합니다.
