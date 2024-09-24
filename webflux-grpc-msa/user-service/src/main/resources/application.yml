@@ -1,6 +1,11 @@
 spring:
   application:
     name: user-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   h2:
     console:
       enabled: true
@@ -9,15 +14,16 @@ spring:
         #로컬 네트워크에서 다른 컴퓨터들이 H2 데이터베이스 콘솔에 접근할 수 있게 됩니다.
         web-allow-others: true
       path: /h2-console
-  r2dbc:
-    url: r2dbc:mysql://localhost:3306/msa?useSSL=false&serverTimezone=UTC&profileSQL=true
-    username: root
-    password: 1234
-    driver-class-name: io.r2dbc.mysql.MySqlConnectionFactoryProvider
-  data:
-    r2dbc:
-      repositories:
-        enabled: true
+      #아래 정보를 암호화하기 위해서 옮길거임
+#  r2dbc:
+#    url: r2dbc:mysql://localhost:3306/msa?useSSL=false&serverTimezone=UTC&profileSQL=true
+#    username: root
+#    password: 1234
+#    driver-class-name: io.r2dbc.mysql.MySqlConnectionFactoryProvider
+#  data:
+#    r2dbc:
+#      repositories:
+#        enabled: true
 
 
 server:
@@ -45,4 +51,4 @@ management:
         #refresh: 이 엔드포인트는 Spring Cloud Context를 사용하고 있을 때 사용할 수 있습니다. /actuator/refresh 엔드포인트를 호출하면, 애플리케이션의 @RefreshScope 어노테이션이 붙은 빈들이 새로고침됩니다. 이를 통해 런타임 중에 애플리케이션의 설정을 변경하고 이를 반영할 수 있습니다.
         #health: 이 엔드포인트는 애플리케이션의 건강 상태를 제공합니다. /actuator/health 엔드포인트를 호출하면, 애플리케이션의 여러 부분(데이터베이스 연결, 디스크 공간, 메모리 사용량 등)의 상태를 확인할 수 있습니다.
         #beans: 이 엔드포인트는 애플리케이션의 Spring 빈에 대한 정보를 제공합니다. /actuator/beans 엔드포인트를 호출하면, 애플리케이션의 모든 Spring 빈과 그들의 의존성에 대한 정보를 얻을 수 있습니다.
-        include: refresh, health, beans
+        include: refresh, health, beans, busrefresh

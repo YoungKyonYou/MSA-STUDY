@@ -1,6 +1,11 @@
 spring:
   application:
     name: spring-gateway-service
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    username: guest
+    password: guest
   cloud:
     gateway:
       routes:
@@ -99,7 +104,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httpexchanges
+        include: refresh, health, beans, httpexchanges, busrefresh
 
 eureka:
   client:
