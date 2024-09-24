@@ -34,6 +34,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
  * Spring Security에서 UsernamePasswordAuthenticationFilter는
  * 기본적으로 "/login" 경로에서 동작하도록 설계되어 있습니다.
  * 이는 내부적으로 setFilterProcessesUrl() 메서드를 통해 /login을 처리하는 필터임을 지정하고 있습니다.
+ * 
  */
 @Slf4j
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
