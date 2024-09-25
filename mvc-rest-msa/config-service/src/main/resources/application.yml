@@ -13,7 +13,11 @@ spring:
 #        native:
 #          search-locations: file://C:\Users\USER\MSA-STUDY-CONFIG
           #?? git? ???? ??
-
+        git:
+          #uri: file://C:\Users\USER\MSA-STUDY-CONFIG
+          uri: https://github.com/YoungKyonYou/MSA-STUDY-CONFIG.git
+          username: YoungKyonYou
+          password: '{cipher}AQA3OwmcgfCSOcmm0Y+gNZalsm/jK0Zhts4FXIEu9frUOyOME8gjqNfRMzjt7RpaGfg++XORf1EmrGg623nlmzeVcwUaDMJ3sy4/XCleo2Z+r+TsY4RMfEvlmPvYSzstH1w2dfVUjuqXwSDMMqDc0JIB6M18tGbaMAzdBM2LlPBMcJxqKyXdcv/daVja9VKJ9H1lf/gmAZP5I26UmKLxtNC/BUwbDqxQ0bERpWiddyOw4gODC1TQ7VZVYWVFChel3MXZqO5+rcm7ryDz7Im6y7ck3X7n49iyU6TmvyD7S15OEXp6M6TM35RnO2tl6jNvnaLL3xh8extdd0vdQsVahfA2LcJQq/cVfs51lKqIl1dHFMKkqFARxNjUU1ed3GoBxMgNzNUrgWJvUZ2LXBUFcje2AYE1pctcVjSbdxqCR+bJ6A=='
 
 
 server:

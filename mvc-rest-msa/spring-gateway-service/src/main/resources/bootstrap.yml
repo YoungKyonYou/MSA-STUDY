@@ -6,4 +6,4 @@ spring:
       name: ecommerce
   profiles:
     #ecommerce-dev.yml를 참고
-    active: prod
+    active: dev

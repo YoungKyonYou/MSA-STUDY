@@ -38,7 +38,8 @@ public class WebSecurity {
                                 /*"/users/**",*/
                                 "/**",
                                 "/h2-console/**",
-                                "/health_check/**"
+                                "/health_check/**",
+                                "/actuator/**"
                         ).permitAll()
                         //게이트웨이 포트 허용
                         .requestMatchers(request -> {

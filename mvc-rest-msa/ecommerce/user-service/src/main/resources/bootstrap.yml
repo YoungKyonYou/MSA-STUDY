@@ -4,7 +4,7 @@ spring:
       uri: http://localhost:8888
       #ecommerce라는 이름은 config-server에서 설정한 ecommerce.yml 파일의 이름과 일치해야 합니다.
       #만약 name에 config-server 라고 명시하면 application.yml 파일을 참고하게 됨
-      name: user-service-webflux
+      name: user-service-mvc
 #  profiles:
 #    #ecommerce-dev.yml를 참고
 #    active: dev

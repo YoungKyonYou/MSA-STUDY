@@ -30,7 +30,18 @@ public class UserController {
 
     @GetMapping("/health_check")
     public String status() {
-        return "It's Working in User Service on PORT %s".formatted(env.getProperty("local.server.port"));
+//        return "It's Working in User Service on PORT %s".formatted(env.getProperty("local.server.port"));
+        return String.format("""
+                        It's Working in User Service Webflux
+                        ,port(local.server.port) %s
+                        \n,port(server.port) %s
+                        \n,token secret = %s
+                        \n,token expiration time = %s
+                        """,
+                env.getProperty("local.server.port"),
+                env.getProperty("server.port"),
+                env.getProperty("token.secret"),
+                env.getProperty("token.expiration_time"));
     }
 
     @GetMapping("/welcome")
@@ -43,7 +54,7 @@ public class UserController {
 
         UserDto returnUserDto = userService.createUser(UserDto.from(user));
 
-        ResponseUser responseUser = ResponseUser.from(returnUserDto);
+        ResponseUser responseUser = ResponseUser.createdFrom(returnUserDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }

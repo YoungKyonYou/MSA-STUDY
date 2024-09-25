@@ -3,21 +3,30 @@ package com.youyk.userservice.service;
 import com.youyk.userservice.dto.UserDto;
 import com.youyk.userservice.jpa.entity.UserEntity;
 import com.youyk.userservice.jpa.repository.UserRepository;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.StreamSupport;
+import com.youyk.userservice.vo.ResponseOrder;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.env.Environment;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
+    private final RestTemplate restTemplate;
+    private final Environment env;
+
     @Override
     public UserDto createUser(UserDto userDto) {
         UserEntity user = UserEntity.from(userDto, passwordEncoder);
@@ -32,7 +41,18 @@ public class UserServiceImpl implements UserService{
         UserEntity userEntity = userRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다. userId=" + userId));
 
-        return UserDto.from(userEntity);
+        /*
+         * 주문 서비스로부터 사용자의 주문 목록을 조회합니다.
+         */
+        String orderUrl = Objects.requireNonNull(env.getProperty("order_service.url")).formatted(userEntity.getUserId());
+        ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
+                new ParameterizedTypeReference<List<ResponseOrder>>() {
+
+                });
+
+        List<ResponseOrder> orderList = orderListResponse.getBody();
+
+        return UserDto.from(userEntity, orderList);
     }
 
     @Override
@@ -62,6 +82,6 @@ public class UserServiceImpl implements UserService{
          * true: 계정이 잠기지 않았음을 나타내는 불리언 값입니다. true는 계정이 잠기지 않았음을 나타냅니다.
          * List.of(): 사용자에게 부여된 권한의 목록입니다. 이 경우, 사용자에게는 아무런 권한이 부여되지 않았습니다.
          */
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(),true,true, true, true, List.of());
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPwd(), true, true, true, true, List.of());
     }
 }

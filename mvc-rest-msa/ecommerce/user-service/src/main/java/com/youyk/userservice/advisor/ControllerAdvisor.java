@@ -8,6 +8,7 @@ public class ControllerAdvisor {
 
     @ExceptionHandler(RuntimeException.class)
     public String handleRuntimeException(RuntimeException e){
+        e.printStackTrace();
         return e.getMessage();
     }
 }

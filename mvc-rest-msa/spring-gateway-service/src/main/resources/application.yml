@@ -63,7 +63,7 @@ spring:
             #현재 StripPrefix나 RewritePath는 동일한 걸 나타냄 둘 중 하나 없어도 됨
             - StripPrefix=1
             - RemoveRequestHeader=Cookie
-            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
+#            - RewritePath=/user-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
         - id: user-service
           uri: lb://USER-SERVICE # Eureka Server에 등록된 이름 즉 그 서비스의 spring.application.name 이다
@@ -81,9 +81,17 @@ spring:
             - StripPrefix=1
 
         - id: order-service
-          uri: lb://ORDER-SERVICE # Eureka Server에 등록된 이름 즉 그 서비스의 spring.application.name 이다
+          uri: lb://ORDER-SERVICE
           predicates:
-            - Path=/order-service/login
+            - Path=/order-service/actuator/**
+            - Method=GET,POST
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/order-service/(?<segment>.*), /$\{segment}
+        - id: order-service
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/order-service/**
           filters:
             - StripPrefix=1
 
@@ -113,5 +121,5 @@ eureka:
     service-url:
       #Eureka ??? URL? ?????. Eureka ?????? ? URL? ???? Eureka ??? ?????.
       defaultZone: http://localhost:8761/eureka
-token:
-  secret: hisIsASecretKeyForJwtTokenAndItIsLongEnoughToMeetTheRequirementOfHS512AlgorithmHS512AlgorithmHS512Algorithm
+#token:
+#  secret: hisIsASecretKeyForJwtTokenAndItIsLongEnoughToMeetTheRequirementOfHS512AlgorithmHS512AlgorithmHS512Algorithm

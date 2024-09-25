@@ -18,6 +18,15 @@ public record ResponseUser(
                 .email(userDto.email())
                 .name(userDto.name())
                 .userId(userDto.userId())
+                .orders(userDto.orders())
+                .build();
+    }
+
+    public static ResponseUser createdFrom(final UserDto userDto) {
+        return ResponseUser.builder()
+                .email(userDto.email())
+                .name(userDto.name())
+                .userId(userDto.userId())
                 .build();
     }
     public static List<ResponseUser> from(final List<UserDto> userDtos){

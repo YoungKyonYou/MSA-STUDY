@@ -40,4 +40,15 @@ public record UserDto(
                 .orders(new ArrayList<>())
                 .build();
     }
+
+    public static UserDto from(final UserEntity user, final List<ResponseOrder> orders){
+        return UserDto.builder()
+                .email(user.getEmail())
+                .name(user.getName())
+                .userId(user.getUserId())
+                .encryptedPwd(user.getEncryptedPwd())
+                .createdAt(new Date())
+                .orders(orders)
+                .build();
+    }
 }
