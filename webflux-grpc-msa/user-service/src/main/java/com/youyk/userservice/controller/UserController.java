@@ -48,7 +48,7 @@ public class UserController {
         return userReqMono
                 .map(UserDto::from)
                 .flatMap(userDto -> this.userService.createUser(Mono.just(userDto)))
-                .map(ResponseUser::from);
+                .map(ResponseUser::createdFrom);
     }
 
     @GetMapping("/users")

@@ -3,9 +3,12 @@ package com.youyk.orderservice.vo;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.youyk.orderservice.dto.OrderDto;
 import com.youyk.orderservice.r2dbc.entity.OrderEntity;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import lombok.Builder;
+import org.springframework.cglib.core.Local;
 
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -14,7 +17,7 @@ public record ResponseOrder(
         Integer qty,
         Integer totalPrice,
         Integer unitPrice,
-        Date createdAt,
+        LocalDate createdAt,
 
         String orderId
 ) {
@@ -26,7 +29,7 @@ public record ResponseOrder(
                         .totalPrice(d.getTotalPrice())
                         .orderId(d.getOrderId())
                         .unitPrice(d.getUnitPrice())
-                        .createdAt(new Date())
+                        .createdAt(LocalDate.now())
                         .build())
                 .toList();
     }
@@ -38,7 +41,7 @@ public record ResponseOrder(
                 .totalPrice(dto.totalPrice())
                 .orderId(dto.orderId())
                 .unitPrice(dto.unitPrice())
-                .createdAt(new Date())
+                .createdAt(LocalDate.now())
                 .build();
     }
 
@@ -50,7 +53,7 @@ public record ResponseOrder(
                         .totalPrice(d.totalPrice())
                         .orderId(d.orderId())
                         .unitPrice(d.unitPrice())
-                        .createdAt(new Date())
+                        .createdAt(LocalDate.now())
                         .build())
                 .toList();
     }

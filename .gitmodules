@@ -1,0 +1,6 @@
+[submodule "webflux-grpc-msa/order-service/src/main/proto/proto"]
+	path = webflux-grpc-msa/order-service/src/main/proto/proto
+	url = https://github.com/YoungKyonYou/MSA-STUDY-PROTO.git
+[submodule "webflux-grpc-msa/user-service/src/main/proto/proto"]
+	path = webflux-grpc-msa/user-service/src/main/proto/proto
+	url = https://github.com/YoungKyonYou/MSA-STUDY-PROTO.git

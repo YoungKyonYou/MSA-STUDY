@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
+	id 'com.google.protobuf' version '0.8.19'
 }
 
 group = 'com.youyk'
@@ -25,9 +26,20 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.3")
+	grpcVersion = '1.60.0'
+	protocVersion = '3.24.0'
+	logbackVersion = '1.4.12'
+	jacksonVersion = '2.12.7.1'
+	tomcatAnnotationsVersion = '6.0.53'
+	junitVersion = '5.10.1'
 }
 
 dependencies {
+	// grpc / proto related dependencies
+	implementation "io.grpc:grpc-netty-shaded:$grpcVersion"
+	implementation "io.grpc:grpc-protobuf:$grpcVersion"
+	implementation "io.grpc:grpc-stub:$grpcVersion"
+
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.security:spring-security-config'
 	implementation 'org.springframework.security:spring-security-web'
@@ -59,4 +71,22 @@ dependencyManagement {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+protobuf {
+	protoc {
+		artifact = "com.google.protobuf:protoc:${protocVersion}"
+	}
+	clean {
+		delete generatedFilesBaseDir
+	}
+	plugins {
+		grpc {
+			artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+		}
+	}
+	generateProtoTasks {
+		all()*.plugins {
+			grpc{}
+		}
+	}
 }

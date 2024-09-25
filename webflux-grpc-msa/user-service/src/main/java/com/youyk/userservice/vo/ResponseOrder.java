@@ -11,7 +11,6 @@ public record ResponseOrder(
         Integer qty,
         Integer unitPrice,
         Integer totalPrice,
-        List<ResponseOrder> orders,
         Date createdAt
 ) {
 }
