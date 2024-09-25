@@ -10,11 +10,12 @@ import com.youyk.orderservice.dto.OrderDto;
 import com.youyk.orderservice.r2dbc.repository.OrderRepository;
 import io.grpc.stub.StreamObserver;
 import lombok.RequiredArgsConstructor;
+import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 @RequiredArgsConstructor
-@Service
+@GrpcService
 public class OrderService extends OrderServiceGrpc.OrderServiceImplBase{
     private final OrderRepository orderRepository;
 
@@ -36,7 +37,7 @@ public class OrderService extends OrderServiceGrpc.OrderServiceImplBase{
                             .setTotalPrice(item.getTotalPrice())
                             .setUnitPrice(item.getUnitPrice())
                             .build();
-                 return Flux.just(order);
+                    return Flux.just(order);
                 })
                 .doOnNext(responseObserver::onNext)
                 .doOnComplete(responseObserver::onCompleted)

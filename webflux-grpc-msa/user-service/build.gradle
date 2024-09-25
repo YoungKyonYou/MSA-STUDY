@@ -29,7 +29,6 @@ ext {
 	grpcVersion = '1.60.0'
 	protocVersion = '3.24.0'
 	logbackVersion = '1.4.12'
-	jacksonVersion = '2.12.7.1'
 	tomcatAnnotationsVersion = '6.0.53'
 	junitVersion = '5.10.1'
 }
@@ -39,6 +38,13 @@ dependencies {
 	implementation "io.grpc:grpc-netty-shaded:$grpcVersion"
 	implementation "io.grpc:grpc-protobuf:$grpcVersion"
 	implementation "io.grpc:grpc-stub:$grpcVersion"
+	implementation "org.apache.tomcat:annotations-api:$tomcatAnnotationsVersion"
+	implementation "ch.qos.logback:logback-classic:$logbackVersion"    // logback
+	implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.17.2'
+	implementation 'com.salesforce.servicelibs:reactor-grpc-stub:1.0.1'
+	// https://mvnrepository.com/artifact/net.devh/grpc-client-spring-boot-starter
+	implementation group: 'net.devh', name: 'grpc-client-spring-boot-starter', version: '3.1.0.RELEASE'
+	implementation 'net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.security:spring-security-config'
