@@ -24,7 +24,9 @@ spring:
     r2dbc:
       repositories:
         enabled: true
-
+grpc:
+  server:
+    port: 6561
 server:
   port: 0
 

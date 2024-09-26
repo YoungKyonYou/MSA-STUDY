@@ -1,6 +1,8 @@
 package com.youyk.userservice.service;
 
+import com.youyk.userservice.client.OrderServiceClient;
 import com.youyk.userservice.dto.UserDto;
+import com.youyk.userservice.error.FeignErrorDecoder;
 import com.youyk.userservice.jpa.entity.UserEntity;
 import com.youyk.userservice.jpa.repository.UserRepository;
 import com.youyk.userservice.vo.ResponseOrder;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final RestTemplate restTemplate;
     private final Environment env;
+    private final OrderServiceClient orderServiceClient;
 
     @Override
     public UserDto createUser(UserDto userDto) {
@@ -43,14 +46,20 @@ public class UserServiceImpl implements UserService {
 
         /*
          * 주문 서비스로부터 사용자의 주문 목록을 조회합니다.
+         * REST TEMPLATE
          */
-        String orderUrl = Objects.requireNonNull(env.getProperty("order_service.url")).formatted(userEntity.getUserId());
+    /*    String orderUrl = Objects.requireNonNull(env.getProperty("order_service.url")).formatted(userEntity.getUserId());
         ResponseEntity<List<ResponseOrder>> orderListResponse = restTemplate.exchange(orderUrl, HttpMethod.GET, null,
                 new ParameterizedTypeReference<List<ResponseOrder>>() {
 
                 });
 
-        List<ResponseOrder> orderList = orderListResponse.getBody();
+        List<ResponseOrder> orderList = orderListResponse.getBody();*/
+
+        /**
+         * FEIGN CLIENT
+         */
+        List<ResponseOrder> orderList = orderServiceClient.getOrders(userId);
 
         return UserDto.from(userEntity, orderList);
     }

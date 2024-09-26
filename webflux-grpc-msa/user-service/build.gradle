@@ -2,7 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.3.3'
 	id 'io.spring.dependency-management' version '1.1.6'
-	id 'com.google.protobuf' version '0.8.19'
+	id 'com.google.protobuf' version '0.9.4'
 }
 
 group = 'com.youyk'
@@ -26,7 +26,7 @@ repositories {
 
 ext {
 	set('springCloudVersion', "2023.0.3")
-	grpcVersion = '1.60.0'
+	grpcVersion = '1.63.0'
 	protocVersion = '3.24.0'
 	logbackVersion = '1.4.12'
 	tomcatAnnotationsVersion = '6.0.53'
@@ -44,7 +44,7 @@ dependencies {
 	implementation 'com.salesforce.servicelibs:reactor-grpc-stub:1.0.1'
 	// https://mvnrepository.com/artifact/net.devh/grpc-client-spring-boot-starter
 	implementation group: 'net.devh', name: 'grpc-client-spring-boot-starter', version: '3.1.0.RELEASE'
-	implementation 'net.devh:grpc-server-spring-boot-starter:3.0.0.RELEASE'
+	implementation 'net.devh:grpc-server-spring-boot-starter:3.1.0.RELEASE'
 
 	implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
 	implementation 'org.springframework.security:spring-security-config'
@@ -80,19 +80,23 @@ tasks.named('test') {
 }
 protobuf {
 	protoc {
-		artifact = "com.google.protobuf:protoc:${protocVersion}"
-	}
-	clean {
-		delete generatedFilesBaseDir
+// The artifact spec for the Protobuf Compiler
+		artifact = "com.google.protobuf:protoc:3.25.1"
 	}
 	plugins {
 		grpc {
-			artifact = "io.grpc:protoc-gen-grpc-java:${grpcVersion}"
+// To generate grpc source code
+			artifact = "io.grpc:protoc-gen-grpc-java:1.31.0"
+		}
+		reactor {
+// To genrate reactive Spring webflux source code
+			artifact = "com.salesforce.servicelibs:reactor-grpc:1.0.1"
 		}
 	}
 	generateProtoTasks {
-		all()*.plugins {
-			grpc{}
+		ofSourceSet("main")*.plugins {
+			grpc {}
+			reactor {}
 		}
 	}
 }

@@ -5,6 +5,7 @@ import com.youyk.orderservice.dto.OrderDto;
 import com.youyk.orderservice.jpa.entity.OrderEntity;
 import com.youyk.orderservice.jpa.repository.OrderRepository;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -25,7 +26,7 @@ public class OrderServiceImpl implements OrderService {
                 .totalPrice(orderDetails.qty() * orderDetails.unitPrice())
                 .orderId(UUID.randomUUID().toString())
                 .userId(orderDetails.userId())
-                .createdAt(Date.from(Instant.now()))
+                .createdAt(LocalDate.now())
                 .build();
 
         final OrderEntity save = orderRepository.save(orderEntity);

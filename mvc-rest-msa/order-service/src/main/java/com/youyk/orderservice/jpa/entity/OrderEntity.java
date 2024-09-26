@@ -7,6 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,9 +40,9 @@ public class OrderEntity implements Serializable {
     @Column(nullable = false, unique = true)
     private String orderId;
     @Column(nullable = false, updatable = false, unique = true)
-    //현재 시간을 가져오게 함
-    @ColumnDefault(value = "CURRENT_TIMESTAMP")
-    private Date createdAt;
+    //현재 시간을 가져오게 함, mysql에서는 지원하지 않음
+//    @ColumnDefault(value = "CURRENT_TIMESTAMP")
+    private LocalDate createdAt;
 
 
 }

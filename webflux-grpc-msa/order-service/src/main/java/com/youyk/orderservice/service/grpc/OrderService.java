@@ -23,6 +23,7 @@ public class OrderService extends ReactorOrderServiceGrpc.OrderServiceImplBase{
 
     @Override
     public Flux<ResponseOrder> getOrder(Mono<UserId> request) {
+        //flatMapMany: 이 연산자는 Mono 또는 Flux를 반환하는 함수를 인자로 받아서, 이 함수를 각 아이템에 적용한 후, 반환된 모든 스트림을 하나의 Flux로 병합합니다
         return request.flatMapMany(req -> orderRepository.findByUserId(req.getUserId())
                 .map(item -> ResponseOrder.newBuilder()
                         .setCreatedAt(Date.newBuilder()
